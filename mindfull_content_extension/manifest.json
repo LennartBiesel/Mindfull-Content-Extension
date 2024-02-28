@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "JS Extension",
+    "name": "Mindful Content",
     "version": "1.0",
     "description": "Login to the app from a Chrome Extension",
     "permissions": [

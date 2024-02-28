@@ -35,64 +35,65 @@ workModeToggle.addEventListener('change', function() {
         });
     });
 });
+// // Notion authButton 
+// document.getElementById('authButton').addEventListener('click', function() {
+//     const url = 'https://api.notion.com/v1/oauth/authorize?client_id=4207d375-1324-44bc-9081-d631f9dc8951&response_type=code&owner=user&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fnotion%2Fredirect%2F';
+//     window.open(url, '_blank');
+// });
 
-document.getElementById('authButton').addEventListener('click', function() {
-    const url = 'https://api.notion.com/v1/oauth/authorize?client_id=4207d375-1324-44bc-9081-d631f9dc8951&response_type=code&owner=user&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fnotion%2Fredirect%2F';
-    window.open(url, '_blank');
-});
+// // Checks the status of if a notion account is connected 
+// function checkNotionStatus() {
+//     fetchWithToken('http://localhost:8000/api/notion-connection-status/')
+//         .then(response => response.json())
+//         .then(data => {
+//             if (!data.is_connected_to_notion) {
+//                 document.getElementById('authButton').style.display = 'block';
+//                 document.getElementById('addDatabaseButton').style.display = 'none';
+//             } else if (!data.is_connected_to_notion_database) {
+//                 document.getElementById('authButton').style.display = 'none';
+//                 document.getElementById('addDatabaseButton').style.display = 'block';
+//             } else {
+//                 document.getElementById('authButton').style.display = 'none';
+//                 document.getElementById('addDatabaseButton').style.display = 'none';
+//                 showOtherFeatures();
+//             }
+//         })
+//         .catch(error => console.error('Error:', error));
+// }
 
-// Checks the status of if a notion account is connected 
-function checkNotionStatus() {
-    fetchWithToken('http://localhost:8000/api/notion-connection-status/')
-        .then(response => response.json())
-        .then(data => {
-            if (!data.is_connected_to_notion) {
-                document.getElementById('authButton').style.display = 'block';
-                document.getElementById('addDatabaseButton').style.display = 'none';
-            } else if (!data.is_connected_to_notion_database) {
-                document.getElementById('authButton').style.display = 'none';
-                document.getElementById('addDatabaseButton').style.display = 'block';
-            } else {
-                document.getElementById('authButton').style.display = 'none';
-                document.getElementById('addDatabaseButton').style.display = 'none';
-                showOtherFeatures();
-            }
-        })
-        .catch(error => console.error('Error:', error));
-}
+// // Shows the other features after notion is logged in 
+// function showOtherFeatures() {
+//     // Show other elements of the extension's UI that should be available
+//     // after the user is fully connected with Notion
+//     document.getElementById('taskCreation').style.display = 'block';
+//     fetchUserTasks();
+// }
 
-function showOtherFeatures() {
-    // Show other elements of the extension's UI that should be available
-    // after the user is fully connected with Notion
-    document.getElementById('taskCreation').style.display = 'block';
-    fetchUserTasks();
-}
-
-// Notion Database Id Button 
-document.getElementById('addDatabaseButton').addEventListener('click', function() {
-    let databaseLink = prompt("Please enter your Notion Database link:");
-    if (databaseLink) {
-        // Send this link to your Django backend
-        fetchWithToken('http://localhost:8000/api/submit_database_link', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ database_link: databaseLink })
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Database link added successfully.");
-                // Hide the add database button and show other features
-                document.getElementById('addDatabaseButton').style.display = 'none';
-                showOtherFeatures();
-            } else {
-                alert("Failed to add database link. Please try again.");
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-});
+// // Notion Database Id Button 
+// document.getElementById('addDatabaseButton').addEventListener('click', function() {
+//     let databaseLink = prompt("Please enter your Notion Database link:");
+//     if (databaseLink) {
+//         // Send this link to your Django backend
+//         fetchWithToken('http://localhost:8000/api/submit_database_link', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({ database_link: databaseLink })
+//         })
+//         .then(response => {
+//             if (response.ok) {
+//                 alert("Database link added successfully.");
+//                 // Hide the add database button and show other features
+//                 document.getElementById('addDatabaseButton').style.display = 'none';
+//                 showOtherFeatures();
+//             } else {
+//                 alert("Failed to add database link. Please try again.");
+//             }
+//         })
+//         .catch(error => console.error('Error:', error));
+//     }
+// });
 
 
 function fetchWithToken(url, options = {}) {
@@ -432,10 +433,10 @@ function setCurrentTask(taskId) {
 function displayMessage(message) {
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('userArea').style.display = 'block';
-    document.getElementById('taskCreation').style.display = 'none'; // Add this line
+    document.getElementById('taskCreation').style.display = 'block'; // Add this line
     document.getElementById('greeting').innerText = message;
 
-    checkNotionStatus();
+    fetchUserTasks();
     
 }
 

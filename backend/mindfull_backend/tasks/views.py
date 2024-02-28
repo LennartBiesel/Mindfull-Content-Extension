@@ -63,122 +63,122 @@ class IsTaskOwner(BasePermission):
 # Notion Auth SetUp
 
 # checks the status of the notion connection 
-class NotionConnectionStatusView(APIView):
-    permission_classes = [IsAuthenticated]
+# class NotionConnectionStatusView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        try:
-            notion_credentials = NotionCredentials.objects.get(user=request.user)
-            print(request.user, "is auth")
-            return Response({
-                "is_connected_to_notion": notion_credentials.is_connected_to_notion,
-                "is_connected_to_notion_database": notion_credentials.is_connected_to_notion_database
-            })
-        except NotionCredentials.DoesNotExist:
-            print(request.user, "is not auth")
-            return Response({
-                "is_connected_to_notion": False,
-                "is_connected_to_notion_database": False
-            })
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             notion_credentials = NotionCredentials.objects.get(user=request.user)
+#             print(request.user, "is auth")
+#             return Response({
+#                 "is_connected_to_notion": notion_credentials.is_connected_to_notion,
+#                 "is_connected_to_notion_database": notion_credentials.is_connected_to_notion_database
+#             })
+#         except NotionCredentials.DoesNotExist:
+#             print(request.user, "is not auth")
+#             return Response({
+#                 "is_connected_to_notion": False,
+#                 "is_connected_to_notion_database": False
+#             })
 
 
 #the notion request redirect Url 
-class NotionAuthRedirectView(View):
+# class NotionAuthRedirectView(View):
     
-    def get(self, request):
-        print(f"Session data: {request.session.items()}")
-        code = request.GET.get('code')
-        if code:
-            # Exchange the authorization code for an access token
+#     def get(self, request):
+#         print(f"Session data: {request.session.items()}")
+#         code = request.GET.get('code')
+#         if code:
+#             # Exchange the authorization code for an access token
             
-            access_token = self.exchange_code_for_token(code)
-            if access_token:
-                # Redirect the user to Google
-                print("for user", request.user)
-                self.save_notion_credentials(request.user, access_token)
-                return redirect('https://www.notion.so')
-        # Handle error case or redirect to a failure page
-        return redirect('http://localhost:8000/failure')
+#             access_token = self.exchange_code_for_token(code)
+#             if access_token:
+#                 # Redirect the user to Google
+#                 print("for user", request.user)
+#                 self.save_notion_credentials(request.user, access_token)
+#                 return redirect('https://www.notion.so')
+#         # Handle error case or redirect to a failure page
+#         return redirect('http://localhost:8000/failure')
 
 
 
-    def exchange_code_for_token(self, code):
-        token_url = 'https://api.notion.com/v1/oauth/token'
-        client_id = settings.NOTION_CLIENT_ID
-        client_secret = settings.NOTION_CLIENT_SECRET
-        redirect_uri = 'http://localhost:8000/api/notion/redirect/'
+#     def exchange_code_for_token(self, code):
+#         token_url = 'https://api.notion.com/v1/oauth/token'
+#         client_id = settings.NOTION_CLIENT_ID
+#         client_secret = settings.NOTION_CLIENT_SECRET
+#         redirect_uri = 'http://localhost:8000/api/notion/redirect/'
 
-        # Prepare Basic Authentication Header
-        basic_auth_string = f"{client_id}:{client_secret}"
-        basic_auth_encoded = base64.b64encode(basic_auth_string.encode("utf-8")).decode("utf-8")
-        headers = {
-            "Authorization": f"Basic {basic_auth_encoded}",
-            "Content-Type": "application/json"
-        }
+#         # Prepare Basic Authentication Header
+#         basic_auth_string = f"{client_id}:{client_secret}"
+#         basic_auth_encoded = base64.b64encode(basic_auth_string.encode("utf-8")).decode("utf-8")
+#         headers = {
+#             "Authorization": f"Basic {basic_auth_encoded}",
+#             "Content-Type": "application/json"
+#         }
 
-        payload = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': redirect_uri,
-        }
+#         payload = {
+#             'grant_type': 'authorization_code',
+#             'code': code,
+#             'redirect_uri': redirect_uri,
+#         }
 
-        response = requests.post(token_url, json=payload, headers=headers)
+#         response = requests.post(token_url, json=payload, headers=headers)
 
-        if response.status_code == 200:
-            data = response.json()
-            print(data)
-            print("Acces token ",data.get('access_token'))
-            print("Database Id ",data.get('workspace_id'))
-            access_token = data.get('access_token')
-            return access_token
+#         if response.status_code == 200:
+#             data = response.json()
+#             print(data)
+#             print("Acces token ",data.get('access_token'))
+#             print("Database Id ",data.get('workspace_id'))
+#             access_token = data.get('access_token')
+#             return access_token
 
-        # Handle errors or log them for debugging purposes
-        print(f"Failed to exchange code for token. Status: {response.status_code}. Response: {response.text}")
+#         # Handle errors or log them for debugging purposes
+#         print(f"Failed to exchange code for token. Status: {response.status_code}. Response: {response.text}")
 
-        return None
+#         return None
 
-    def save_notion_credentials(self, user, access_token):
-        print(f"User type: {type(user)}, User ID: {getattr(user, 'id', None)}")
-        if not user.is_authenticated:
-            print("User is not authenticated.")
-            return
-        NotionCredentials.objects.update_or_create(
-            user=user,
-            defaults={
-                'access_token': access_token,
-                'is_connected_to_notion': True
-            }
-        )
+#     def save_notion_credentials(self, user, access_token):
+#         print(f"User type: {type(user)}, User ID: {getattr(user, 'id', None)}")
+#         if not user.is_authenticated:
+#             print("User is not authenticated.")
+#             return
+#         NotionCredentials.objects.update_or_create(
+#             user=user,
+#             defaults={
+#                 'access_token': access_token,
+#                 'is_connected_to_notion': True
+#             }
+#         )
     
 # View to handle submission of the Notion database link
 
-class SubmitDatabaseLinkView(APIView):
-    permission_classes = [IsAuthenticated]
+# class SubmitDatabaseLinkView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        database_link = request.data.get('database_link')
-        database_id = self.extract_database_id(database_link)
-        if database_id:
-            self.save_database_id(request.user, database_id)
-            return Response({'message': 'Database ID saved successfully'}, status=200)
-        return Response({'error': 'Failed to extract database ID'}, status=400)
+#     def post(self, request):
+#         database_link = request.data.get('database_link')
+#         database_id = self.extract_database_id(database_link)
+#         if database_id:
+#             self.save_database_id(request.user, database_id)
+#             return Response({'message': 'Database ID saved successfully'}, status=200)
+#         return Response({'error': 'Failed to extract database ID'}, status=400)
 
-    def extract_database_id(self, link):
-        try:
-            path = urlparse(link).path
-            match = re.search(r'([a-f0-9]{32})', path)
-            if match:
-                return match.group(1)
-        except Exception as e:
-            print(f"Error extracting database ID: {e}")
-        return None
+#     def extract_database_id(self, link):
+#         try:
+#             path = urlparse(link).path
+#             match = re.search(r'([a-f0-9]{32})', path)
+#             if match:
+#                 return match.group(1)
+#         except Exception as e:
+#             print(f"Error extracting database ID: {e}")
+#         return None
 
-    def save_database_id(self, user, database_id):
-        # Save the database ID to the user's NotionCredentials
-        notion_credentials, created = NotionCredentials.objects.get_or_create(user=user)
-        notion_credentials.database_id = database_id
-        notion_credentials.is_connected_to_notion_database = True
-        notion_credentials.save()
+#     def save_database_id(self, user, database_id):
+#         # Save the database ID to the user's NotionCredentials
+#         notion_credentials, created = NotionCredentials.objects.get_or_create(user=user)
+#         notion_credentials.database_id = database_id
+#         notion_credentials.is_connected_to_notion_database = True
+#         notion_credentials.save()
 
 
 class TaskCreateView(APIView):
