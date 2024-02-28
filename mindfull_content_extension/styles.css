@@ -1,0 +1,146 @@
+body {
+    font-family: 'Arial', sans-serif;
+    width: 500px; 
+    height: 700px; 
+    background-color: #f9f9f9;
+    padding: 20px;
+    color: #333;
+    line-height: 1.5;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #ffffff;
+    outline: none;
+    transition: border 0.3s ease-in-out;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    border: 1px solid #007BFF;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.currentTask {
+    background-color: #00bd4f; /* Notion-like green */
+    color: #ffffff; /* White text for contrast */
+}
+
+
+
+#registrationToggle,
+#loginToggle {
+    color: #007BFF;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    transition: opacity 0.3s ease;
+}
+
+#registrationToggle:hover,
+#loginToggle:hover {
+    opacity: 0.7;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.logout-create-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#createTaskButton {
+    background-color: #2ECC71; /* Notion-like green */
+    color: white;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* ... [the rest of your CSS] ... */
+
+/* Switch styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+    margin-left: 15px;
+}
+
+.switch input { 
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    right: 0;
+    bottom: 0;
+    background-color: #000dff;  /* A slightly darker background for contrast */
+    transition: .3s;
+    border-radius: 24px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #ff0000;
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);  /* Shadow for a little depth */
+}
+
+input:checked + .slider {
+    background-color: #007BFF;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+

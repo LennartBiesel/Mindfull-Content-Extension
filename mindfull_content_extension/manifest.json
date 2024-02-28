@@ -1,0 +1,34 @@
+{
+    "manifest_version": 3,
+    "name": "JS Extension",
+    "version": "1.0",
+    "description": "Login to the app from a Chrome Extension",
+    "permissions": [
+        "storage",
+        "activeTab",
+        "tabs",
+        "notifications",
+        "webRequest"
+    ],
+    "host_permissions": [
+        "http://localhost:8000/*",
+        "https://www.youtube.com/*"
+    ],
+    "background": {
+        "service": {
+          "scripts": ["background.js"],
+          "type": "background"
+        }
+      },
+      "content_scripts": [{
+        "matches": ["*://www.youtube.com/*"],
+        "js": ["content.js"]
+    }],    
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self';"
+    }
+}
+

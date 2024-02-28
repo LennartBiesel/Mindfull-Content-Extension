@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login Popup</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <div id="loginForm">
+        <input type="text" id="usernameInput" placeholder="Username">
+        <input type="password" id="passwordInput" placeholder="Password">
+        <button id="loginButton">Login</button>
+        <span id="registrationToggle">Register</span>
+    </div>
+
+    <div id="registrationForm" style="display: none;">
+        <input type="text" id="regUsernameInput" placeholder="Username">
+        <input type="email" id="regEmailInput" placeholder="Email">
+        <input type="password" id="regPasswordInput" placeholder="Password">
+        <button id="registerButton">Register</button>
+        <span id="loginToggle">Back to Login</span>
+    </div>
+
+    <div id="userArea" style="display: none;">
+        <h2><span id="greeting"></span></h2>
+        <div class="work-mode-container">
+            <h3 style="display: inline;">Work Mode</h3>
+            <label class="switch" style="display: inline;">
+                <input type="checkbox" id="workModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Task Table -->
+        <table id="taskTable">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Videos Watched</th>
+                    <th>Done</th>
+                    <th>Set Current</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here from JavaScript -->
+            </tbody>
+        </table>
+
+        <div id="taskCreation" style="display: none;">
+            <h3>Create a Task</h3>
+            <input type="text" id="taskInput" placeholder="Task Name">
+            <button id="submitTaskButton">Add Task</button>
+        </div>
+        <button id="authButton">Authorize with Notion</button>
+        <button id="addDatabaseButton" style="display: none;">Add Notion Database</button>
+        <button id="logoutButton">Logout</button>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
