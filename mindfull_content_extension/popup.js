@@ -445,3 +445,35 @@ function displayLoginForm() {
     document.getElementById('userArea').style.display = 'none';
 }
 
+document.getElementById('export_notes').addEventListener('click', exportNotes);
+
+function exportNotes() {
+    chrome.storage.local.get(['accessToken'], function(result) {
+        if (result.accessToken) {
+            fetchWithToken('http://localhost:8000/api/export-notes/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${result.accessToken}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    throw new Error('Failed to download notes.');
+                }
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'notes.csv';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+}

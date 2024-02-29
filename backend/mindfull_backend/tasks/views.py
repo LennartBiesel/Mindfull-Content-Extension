@@ -19,6 +19,7 @@ from notion_client import Client
 import secrets
 import re
 from urllib.parse import urlparse
+import csv
 authorization_base_url = settings.NOTION_AUTHORIZATION_BASE_URL
 token_url = settings.NOTION_TOKEN_URL
 state = secrets.token_hex(16)
@@ -180,6 +181,27 @@ class IsTaskOwner(BasePermission):
 #         notion_credentials.is_connected_to_notion_database = True
 #         notion_credentials.save()
 
+class ExportNotesCSVView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        print(request.user)
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="notes.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['Task Name', 'Video Name', 'URL', 'Video Creator', 'Notes'])  # Header
+
+        # Fetch tasks associated with the user and then videos linked to these tasks
+        tasks = Task.objects.filter(user=request.user).prefetch_related('videos')
+        for task in tasks:
+            print(f"Task: {task.taskName}, Videos: {task.videos.count()}")  # Debugging print
+            for video in task.videos.all():
+                writer.writerow([task.taskName, video.name, video.link, video.creator, video.notes])
+
+        return response
+
 
 class TaskCreateView(APIView):
     permission_classes = [IsAuthenticated, IsTaskOwner]
@@ -303,18 +325,19 @@ class SaveVideoNotesView(APIView):
         video_length = convert_duration(video_length_iso)
 
         # Save to your Video model
-        Video.objects.create(
+        new_video = Video.objects.create(
             name=video_name,
             length=video_length,
             creator=video_creator,
             link=url,
             notes=notes
         )
-        self.add_video_to_notion(request.user, video_name, url, video_creator, notes)
 
         taskName = request.data.get('taskName')
-        print(taskName)
         task = get_object_or_404(Task, taskName=taskName)
+
+        # Link the video to the task
+        task.videos.add(new_video)
 
         # Increment videos_watched and save.
         task.videos_watched += 1
