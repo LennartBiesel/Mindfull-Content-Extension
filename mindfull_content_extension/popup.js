@@ -233,22 +233,22 @@ document.getElementById('loginToggle').addEventListener('click', function() {
 
 function register() {
     let username = document.getElementById('regUsernameInput').value;
-    let email = document.getElementById('regEmailInput').value; // Added this line
+    let email = document.getElementById('regEmailInput').value;
     let password = document.getElementById('regPasswordInput').value;
 
-    fetchWithToken('http://localhost:8000/api/register', {
+    fetch('http://localhost:8000/api/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             username: username,
-            email: email, // Added this line
+            email: email,
             password: password
         })
     })
     .then(response => {
-        if (response.status === 201) { // Assuming a successful registration returns a 201 Created status
+        if (response.status === 201) {
             displayMessage(`Successfully registered, ${username}! Please login.`);
             toggleVisibility('loginForm', 'registrationForm');
         } else {
